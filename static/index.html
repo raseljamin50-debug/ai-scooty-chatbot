@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en" data-mode="system" data-accent="blue">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AI Scooty Assistant</title>
+  <meta name="description" content="Ask anything about AI Scooty.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230078d4'/%3E%3Cpath d='M36 10 20 36h11l-4 18 17-27H33z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="desktop">
+
+  <!-- Wallpaper: sample AI Scooty drawing (solar panel on top, sun in the corner) -->
+  <div class="wallpaper" aria-hidden="true">
+    <svg class="scooty-art" viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" role="img">
+      <ellipse cx="450" cy="462" rx="380" ry="14" class="sv-shadow"/>
+
+      <!-- sun -->
+      <g class="sv-sun" transform="translate(810 90)">
+        <g class="sv-rays">
+          <line x1="0" y1="-52" x2="0" y2="-70"/><line x1="0" y1="52" x2="0" y2="70"/>
+          <line x1="-52" y1="0" x2="-70" y2="0"/><line x1="52" y1="0" x2="70" y2="0"/>
+          <line x1="-37" y1="-37" x2="-50" y2="-50"/><line x1="37" y1="37" x2="50" y2="50"/>
+          <line x1="-37" y1="37" x2="-50" y2="50"/><line x1="37" y1="-37" x2="50" y2="-50"/>
+        </g>
+        <circle r="34"/>
+      </g>
+      <!-- sunlight on the panel -->
+      <g class="sv-beam">
+        <line x1="770" y1="125" x2="560" y2="108"/>
+        <line x1="775" y1="140" x2="520" y2="118"/>
+      </g>
+
+      <!-- wheels -->
+      <g class="sv-wheel"><circle cx="230" cy="390" r="64"/><circle cx="230" cy="390" r="40" class="sv-rim"/><circle cx="230" cy="390" r="9"/></g>
+      <g class="sv-wheel"><circle cx="670" cy="390" r="64"/><circle cx="670" cy="390" r="40" class="sv-rim"/><circle cx="670" cy="390" r="9"/></g>
+
+      <!-- front fork + steering -->
+      <line x1="675" y1="330" x2="670" y2="390" class="sv-dark-line" stroke-width="12"/>
+      <line x1="655" y1="170" x2="675" y2="100" class="sv-dark-line" stroke-width="12"/>
+      <line x1="660" y1="98" x2="712" y2="104" class="sv-dark-line" stroke-width="14"/>
+
+      <!-- body -->
+      <polygon class="sv-body" points="150,370 160,300 230,262 420,262 470,300 480,370 400,380 300,345 200,345"/>
+      <rect x="430" y="352" width="170" height="24" rx="12" class="sv-dark"/>
+      <polygon class="sv-body" points="585,330 600,215 650,150 690,165 700,330"/>
+      <rect x="140" y="300" width="14" height="24" rx="5" class="sv-tail"/>
+      <polygon class="sv-bolt" points="318,282 296,318 312,318 304,346 336,304 318,304 330,282"/>
+
+      <!-- seat -->
+      <rect x="240" y="236" width="190" height="34" rx="17" class="sv-dark"/>
+
+      <!-- solar canopy -->
+      <line x1="270" y1="236" x2="262" y2="150" class="sv-dark-line" stroke-width="8"/>
+      <line x1="410" y1="236" x2="418" y2="150" class="sv-dark-line" stroke-width="8"/>
+      <polygon class="sv-panel" points="235,150 460,150 500,105 275,105"/>
+      <g class="sv-grid">
+        <line x1="331" y1="105" x2="291" y2="150"/><line x1="388" y1="105" x2="348" y2="150"/><line x1="444" y1="105" x2="404" y2="150"/>
+        <line x1="255" y1="127" x2="480" y2="127"/>
+      </g>
+
+      <!-- headlight -->
+      <polygon class="sv-light-beam" points="721,160 820,128 820,212 721,182"/>
+      <circle cx="705" cy="171" r="16" class="sv-lamp"/>
+    </svg>
+  </div>
+
+  <!-- Desktop icon (opens the chat again after it was closed) -->
+  <button class="desk-icon" id="deskIcon" type="button">
+    <span class="desk-glyph" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M13 2 5 14h6l-1 8 9-13h-6z"/></svg>
+    </span>
+    <span>AI Scooty Chat</span>
+  </button>
+
+  <!-- The chat window -->
+  <main class="window" id="win" aria-label="AI Scooty Assistant">
+    <header class="titlebar">
+      <div class="title">
+        <span class="app-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2 5 14h6l-1 8 9-13h-6z"/></svg></span>
+        <span class="title-text" id="brandTitle">AI Scooty Assistant</span>
+      </div>
+      <div class="tb-buttons">
+        <button class="tb-btn" id="btnClear" type="button" title="Clear chat" aria-label="Clear chat">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 2h4v1h3v1H3V3h3zM4 5h8l-.6 8.2a1 1 0 0 1-1 .8H5.6a1 1 0 0 1-1-.8z"/></svg>
+        </button>
+        <button class="tb-btn" id="btnSettings" type="button" title="Personalization" aria-label="Personalization" aria-expanded="false" aria-controls="settings">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 5.2A2.8 2.8 0 1 0 8 10.8 2.8 2.8 0 0 0 8 5.2zm0 1.2a1.6 1.6 0 1 1 0 3.2 1.6 1.6 0 0 1 0-3.2zM7 1h2l.3 1.7 1 .4 1.4-1 1.4 1.4-1 1.4.4 1 1.7.3v2l-1.7.3-.4 1 1 1.4-1.4 1.4-1.4-1-1 .4L9 15H7l-.3-1.7-1-.4-1.4 1-1.4-1.4 1-1.4-.4-1L1 9.8v-2l1.7-.3.4-1-1-1.4 1.4-1.4 1.4 1 1-.4z" fill-rule="evenodd" opacity=".9"/></svg>
+        </button>
+        <button class="tb-btn" id="btnMin" type="button" title="Minimize" aria-label="Minimize">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5h10v1H3z"/></svg>
+        </button>
+        <button class="tb-btn" id="btnMax" type="button" title="Maximize" aria-label="Maximize">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 3.5h9v9h-9zm1 1v7h7v-7z"/></svg>
+        </button>
+        <button class="tb-btn tb-close" id="btnClose" type="button" title="Close" aria-label="Close">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3.6 3 4.4 4.4L12.4 3l.6.6L8.6 8l4.4 4.4-.6.6L8 8.6 3.6 13l-.6-.6L7.4 8 3 3.6z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+      <section class="chat">
+        <div class="messages" id="messages" role="log" aria-live="polite" aria-label="Conversation"></div>
+        <div class="chips" id="chips" aria-label="Suggested questions"></div>
+        <form class="composer" id="composer" autocomplete="off">
+          <label class="sr-only" for="input">Your question about AI Scooty</label>
+          <input id="input" type="text" maxlength="500" placeholder="Type your question about AI Scooty" enterkeyhint="send">
+          <button class="send" id="send" type="submit" aria-label="Send">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.7 1.4 14.6 7.6a.5.5 0 0 1 0 .9L1.7 14.6a.5.5 0 0 1-.7-.6L2.6 9 9 8 2.6 7 1 2a.5.5 0 0 1 .7-.6z"/></svg>
+          </button>
+        </form>
+        <p class="hint">Your chat is saved only in this browser.</p>
+      </section>
+
+      <!-- Personalization flyout -->
+      <aside class="settings" id="settings" hidden>
+        <h2>Personalization</h2>
+
+        <fieldset>
+          <legend>Theme</legend>
+          <div class="segmented" role="radiogroup" aria-label="Theme">
+            <label><input type="radio" name="mode" value="light"><span>Light</span></label>
+            <label><input type="radio" name="mode" value="dark"><span>Dark</span></label>
+            <label><input type="radio" name="mode" value="system"><span>System</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Accent color</legend>
+          <div class="swatches" role="radiogroup" aria-label="Accent color">
+            <label title="Blue"><input type="radio" name="accent" value="blue"><span style="--sw:#0078d4"></span></label>
+            <label title="Teal"><input type="radio" name="accent" value="teal"><span style="--sw:#00808a"></span></label>
+            <label title="Green"><input type="radio" name="accent" value="green"><span style="--sw:#107c10"></span></label>
+            <label title="Orange"><input type="radio" name="accent" value="orange"><span style="--sw:#c2410c"></span></label>
+            <label title="Pink"><input type="radio" name="accent" value="pink"><span style="--sw:#b3318f"></span></label>
+            <label title="Purple"><input type="radio" name="accent" value="purple"><span style="--sw:#6b4bd6"></span></label>
+          </div>
+        </fieldset>
+
+        <button class="btn" id="btnClear2" type="button">Clear chat</button>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Taskbar -->
+  <footer class="taskbar">
+    <div class="tb-center">
+      <button class="task-btn" id="taskStart" type="button" aria-label="Start" title="Start">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h8.5v8.5H3zm9.5 0H21v8.5h-8.5zM3 12.5h8.5V21H3zm9.5 0H21V21h-8.5z"/></svg>
+      </button>
+      <button class="task-btn active" id="taskChat" type="button" aria-label="AI Scooty Assistant" title="AI Scooty Assistant">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 5 14h6l-1 8 9-13h-6z"/></svg>
+      </button>
+      <button class="task-btn" id="taskSettings" type="button" aria-label="Personalization" title="Personalization">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.8 1.8-1.7 0-.5-.2-.9-.5-1.3-.3-.4-.5-.8-.5-1.3 0-.9.7-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.6-4-6-9-6zM7 12.5a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6zm3-4a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6zm5 0a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6z"/></svg>
+      </button>
+    </div>
+    <div class="tray" aria-hidden="true">
+      <span class="clock"><span id="clockTime"></span><span id="clockDate"></span></span>
+    </div>
+  </footer>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
